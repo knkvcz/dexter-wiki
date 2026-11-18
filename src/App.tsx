@@ -4,13 +4,31 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import CardPersonagem from "./components/CardPersonagem";
 import CardSerie from "./components/CardSerie";
-import { personagens } from "./data/personagens";
 import { series } from "./data/series";
-import type { Tema } from "./data/tipos";
+import { buscarPersonagens } from "./data/api";
+import type { Personagem, Tema } from "./data/tipos";
 
 function App() {
+  const [personagens, setPersonagens] = useState<Personagem[]>([]);
+  const [carregando, setCarregando] = useState<boolean>(true);
+  const [erro, setErro] = useState<string | null>(null);
   const [favoritos, setFavoritos] = useState<number[]>([]);
   const [tema, setTema] = useState<Tema>("escuro");
+
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const dados = await buscarPersonagens();
+        setPersonagens(dados);
+      } catch {
+        setErro("Não foi possível carregar os personagens. Tente novamente mais tarde.");
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregar();
+  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.tema = tema;
@@ -32,17 +50,32 @@ function App() {
       <main className="main">
         <section id="personagens" className="secao">
           <h2 className="secao-titulo">Personagens</h2>
-          <p className="secao-contador">Favoritos: {favoritos.length}</p>
-          <div className="grade">
-            {personagens.map((p) => (
-              <CardPersonagem
-                key={p.id}
-                personagem={p}
-                favorito={favoritos.includes(p.id)}
-                onFavoritar={alternarFavorito}
-              />
-            ))}
-          </div>
+
+          {carregando && (
+            <p className="estado-carregando">Carregando personagens...</p>
+          )}
+
+          {erro && (
+            <p className="estado-erro" role="alert">
+              {erro}
+            </p>
+          )}
+
+          {!carregando && !erro && (
+            <>
+              <p className="secao-contador">Favoritos: {favoritos.length}</p>
+              <div className="grade">
+                {personagens.map((p) => (
+                  <CardPersonagem
+                    key={p.id}
+                    personagem={p}
+                    favorito={favoritos.includes(p.id)}
+                    onFavoritar={alternarFavorito}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </section>
 
         <section id="series" className="secao">

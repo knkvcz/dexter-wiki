@@ -13,3 +13,5 @@ export type Serie = {
   ano: string;
   descricao: string;
 };
+
+export type Tema = "claro" | "escuro";

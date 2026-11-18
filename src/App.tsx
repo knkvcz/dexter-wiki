@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -6,9 +6,15 @@ import CardPersonagem from "./components/CardPersonagem";
 import CardSerie from "./components/CardSerie";
 import { personagens } from "./data/personagens";
 import { series } from "./data/series";
+import type { Tema } from "./data/tipos";
 
 function App() {
   const [favoritos, setFavoritos] = useState<number[]>([]);
+  const [tema, setTema] = useState<Tema>("escuro");
+
+  useEffect(() => {
+    document.documentElement.dataset.tema = tema;
+  }, [tema]);
 
   function alternarFavorito(id: number) {
     setFavoritos((atual) =>
@@ -16,9 +22,13 @@ function App() {
     );
   }
 
+  function alternarTema() {
+    setTema((atual) => (atual === "escuro" ? "claro" : "escuro"));
+  }
+
   return (
     <>
-      <Header />
+      <Header tema={tema} onAlternarTema={alternarTema} />
       <main className="main">
         <section id="personagens" className="secao">
           <h2 className="secao-titulo">Personagens</h2>

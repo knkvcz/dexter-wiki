@@ -91,6 +91,35 @@ body {
   color: var(--cor-texto-suave);
 }
 
+/* Estados de carregando e erro */
+.estado-carregando {
+  padding: var(--espaco-g) var(--espaco-m);
+  text-align: center;
+  color: var(--cor-texto-suave);
+  font-size: 1.1rem;
+  animation: pulsar 1.2s ease-in-out infinite;
+}
+
+.estado-erro {
+  padding: var(--espaco-m);
+  background: var(--cor-superficie);
+  border: 2px solid var(--cor-destaque);
+  border-radius: 8px;
+  color: var(--cor-destaque);
+  font-weight: bold;
+  text-align: center;
+}
+
+@keyframes pulsar {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
 /* Personagens */
 .grade {
   display: grid;
